@@ -1,2 +1,3 @@
 .idea/
 src/__init__.py
+src/.pytest_cache
