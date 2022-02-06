@@ -1,5 +1,3 @@
-
-
 class VPC:
     def __init__(self, client):
         self._client = client
@@ -38,3 +36,30 @@ class VPC:
             VpcId=vpc_id,
             CiderBlock=cidr_block
         )
+
+    def create_public_route_table(self, vpc_id):
+        print(f'Creating public route table for VPC {vpc_id}')
+        self._client.create_route_table(VpcId=vpc_id)
+
+    def create_igw_route_to_public_route_table(self, rtb_id, igw_id):
+        print(f'Adding route for IGW {igw_id} to Rout Table {rtb_id}')
+        return self._client.create_route(
+            RouteTableId=rtb_id,
+            GatewayId=igw_id,
+            DestinationCidrBlock='0.0.0.0/0'
+        )
+
+    def associate_subnet_with_route_table(self, subnet_id, rtb_id):
+        print(f'Associating subnet {subnet_id} with Route Table {rtb_id}')
+        return self._client.associate_route_table(
+            SubnetId=subnet_id,
+            RouteTableId=rtb_id
+        )
+
+    def allow_auto_assign_ip_addresses_for_subnet(self, subnet_id):
+        return self._client.modify_subnet_attributes(
+            SubnetId=subnet_id,
+            MapPublicIpOnLaunch={'Value': True}
+        )
+
+
