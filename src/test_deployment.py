@@ -71,7 +71,14 @@ def main():
     # Create a Security Group
     public_security_group_name = 'Boto3-Public-SG'
     public_security_group_description = 'Public Security Group for Public Subnet Internet Access'
-    ec2.create_security_group(public_security_group_name, public_security_group_description, vpc_id)
+    public_security_group_response = ec2.create_security_group(public_security_group_name, public_security_group_description, vpc_id)
+
+    public_security_group_id = public_security_group_response['GroupId']
+
+    # Add public Access to Security Group
+    ec2.add_inbound_rule_to_sg(public_security_group_id)
+
+    print(f'Added public access rule to Security Group {public_security_group_name}')
 
 
 if __name__ == '__main__':

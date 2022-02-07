@@ -16,3 +16,31 @@ class EC2:
             Description=description,
             VpcId=vpc_id
         )
+
+    def add_inbound_rule_to_sg(self, security_group_id):
+        print(f'Adding inbound public access to Security Group {security_group_id}')
+        return self._client.authorize_security_group_ingress(
+            GroupId=security_group_id,
+            IpPermissions=[
+                {
+                    'IpProtocol': 'tcp',
+                    'FromPort': 80,
+                    'ToPort': 80,
+                    'IpRanges': [
+                        {
+                            'CidrIp': '0.0.0.0/0'
+                        }
+                    ]
+                },
+                {
+                    'IpProtocol': 'tcp',
+                    'FromPort': 22,
+                    'ToPort': 22,
+                    'IpRanges': [
+                        {
+                            'CidrIp': '0.0.0.0/0'
+                        }
+                    ]
+                }
+            ]
+        )
