@@ -44,3 +44,17 @@ class EC2:
                 }
             ]
         )
+
+    def launch_ec2_instance(self, image_id, key_name, min_count, max_count, security_group_id, subnet_id, user_id):
+        # t2.micro is used only for free teir
+        print(f'Launching {min_count} EC2 Instance(s) within subnet {subnet_id}')
+        return self._client.run_instances(
+            ImageId=image_id,
+            KeyName=key_name,
+            MinCount=min_count,
+            MaxCount=max_count,
+            InstanceType='t2.micro',
+            SecurityGroupIds=[security_group_id],
+            SubnetId=subnet_id,
+            UserData=user_id
+        )

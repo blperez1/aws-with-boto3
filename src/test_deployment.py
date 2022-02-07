@@ -85,7 +85,11 @@ def main():
                 yum install httpd24 -y
                 service httpd start
                 chkconfig httpd on
-                echo"<html><body><h1>Hello From Boto3 using Python!</h1></body></html>" > /var/www/html/index.html """
+                echo"<html><body><h1>Hello From Boto3 using Python!</h1></body></html>" > /var/www/html/index.html"""
+
+    ec2.launch_ec2_instance('ami-0b6705f88b1f688c1', key_pair_name, 1, 1, public_security_group_id, public_subnet_id, user_data)
+
+    print('Launching Public EC2 Instance using AMI ami-0b6705f88b1f688c1')
 
 
 if __name__ == '__main__':
