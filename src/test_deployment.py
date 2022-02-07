@@ -68,6 +68,11 @@ def main():
 
     print(f'Created Key Pair with name {key_pair_name} : {str(key_pair_response)}')
 
+    # Create a Security Group
+    public_security_group_name = 'Boto3-Public-SG'
+    public_security_group_description = 'Public Security Group for Public Subnet Internet Access'
+    ec2.create_security_group(public_security_group_name, public_security_group_description, vpc_id)
+
 
 if __name__ == '__main__':
     main()
