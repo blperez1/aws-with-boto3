@@ -68,7 +68,7 @@ def main():
 
     print(f'Created Key Pair with name {key_pair_name} : {str(key_pair_response)}')
 
-    # Create a Security Group
+    # Create a public Security Group
     public_security_group_name = 'Boto3-Public-SG'
     public_security_group_description = 'Public Security Group for Public Subnet Internet Access'
     public_security_group_response = ec2.create_security_group(public_security_group_name, public_security_group_description, vpc_id)
@@ -79,6 +79,13 @@ def main():
     ec2.add_inbound_rule_to_sg(public_security_group_id)
 
     print(f'Added public access rule to Security Group {public_security_group_name}')
+
+    user_data = """#!/bin/bash
+                yum update -y
+                yum install httpd24 -y
+                service httpd start
+                chkconfig httpd on
+                echo"<html><body><h1>Hello From Boto3 using Python!</h1></body></html>" > /var/www/html/index.html """
 
 
 if __name__ == '__main__':
