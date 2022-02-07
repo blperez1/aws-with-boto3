@@ -71,7 +71,8 @@ def main():
     # Create a public Security Group
     public_security_group_name = 'Boto3-Public-SG'
     public_security_group_description = 'Public Security Group for Public Subnet Internet Access'
-    public_security_group_response = ec2.create_security_group(public_security_group_name, public_security_group_description, vpc_id)
+    public_security_group_response = ec2.create_security_group(public_security_group_name,
+                                                               public_security_group_description, vpc_id)
 
     public_security_group_id = public_security_group_response['GroupId']
 
@@ -80,6 +81,7 @@ def main():
 
     print(f'Added public access rule to Security Group {public_security_group_name}')
 
+    # Launch public EC2 Instance with public subnet and public security group
     user_data = """#!/bin/bash
                 yum update -y
                 yum install httpd24 -y
@@ -87,9 +89,25 @@ def main():
                 chkconfig httpd on
                 echo"<html><body><h1>Hello From Boto3 using Python!</h1></body></html>" > /var/www/html/index.html"""
 
-    ec2.launch_ec2_instance('ami-0b6705f88b1f688c1', key_pair_name, 1, 1, public_security_group_id, public_subnet_id, user_data)
+    ami_id = 'ami-0b6705f88b1f688c1'
+
+    ec2.launch_ec2_instance(ami_id, key_pair_name, 1, 1, public_security_group_id, public_subnet_id,
+                            user_data)
 
     print('Launching Public EC2 Instance using AMI ami-0b6705f88b1f688c1')
+
+    # Adding another Security Group for Private EC2Instance
+    private_security_group_name = 'Boto3_Private_SG'
+    private_security_group_description = 'Private Security Group for Private Subnet'
+    private_security_group_response = ec2.create_security_group(private_security_group_name, private_security_group_description)
+
+    private_security_group_id = private_security_group_response['GroupId']
+
+    # Add rule to private security group
+    ec2.add_inbound_rule_to_sg(private_security_group_id)
+
+    # Launch a private EC2 Instance
+    ec2.launch_ec2_instance(ami_id, key_pair_name, 1, 1, private_security_group_id, private_subnet_id, """""" )
 
 
 if __name__ == '__main__':
